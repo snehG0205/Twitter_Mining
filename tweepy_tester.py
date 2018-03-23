@@ -12,19 +12,32 @@ auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth,wait_on_rate_limit=True)
 #####United Airlines
 # Open/Create a file to append data
-# csvFile = open('ua.csv', 'w+')
+csvFile = open('ua.csv', 'w+')
 # Use csv Writer
-# csvWriter = csv.writer(csvFile)
-tag = "#TuesdayThoughts"
+csvWriter = csv.writer(csvFile)
+tag = "#FridayFeeling"
 limit = 0
-tweets = []
+csvWriter.writerow(["ID", "Username", "Twitter @", "Tweet","Tweeted At", "Favourite Count", "Retweet Count"])
 
-for tweet in tweepy.Cursor(api.search,q=""+tag,count=100,lang="en",since="2017-04-03").items():
-    print (tweet.created_at, tweet.text)
-    # csvWriter.writerow([tweet.created_at, tweet.text.encode('utf-8')])
-    tweets.append(tweet)
+for tweet in tweepy.Cursor(api.search,q=""+tag,count=300,lang="en",since="2017-04-03").items():
+    # print (tweet.created_at, tweet.text)
+    if tweet.truncated == "True":
+    	continue
+    print ("ID:", tweet.id)
+    print ("User ID:", tweet.user.id)
+    print ("Name: ", tweet.user.name)
+    print ("Twitter @:", tweet.user.screen_name)
+    print ("Text:", tweet.text)
+    print ("Created:", tweet.created_at)
+    print ("Favorite Count:", tweet.favorite_count)
+    print ("Retweet count:", tweet.retweet_count)
+    # print ("Truncated:", tweet.truncated)
+    print ("\n\n")
+
+    csvWriter.writerow([tweet.id, tweet.user.name, tweet.user.screen_name, tweet.text,tweet.created_at, tweet.favorite_count, tweet.retweet_count])
+    csvWriter.writerow([])
     limit = limit + 1
-    if limit == 10:
+    if limit == 5:
     	break
 
 print ("Done")
@@ -32,22 +45,22 @@ print ("Done")
 # print (tweets)
 
 # convert 'tweets' list to pandas.DataFrame
-tweets_df = pd.DataFrame(vars(tweets[i]) for i in range(len(tweets)))
+# tweets_df = pd.DataFrame(vars(tweets[i]) for i in range(len(tweets)))
 
-# define attributes you want
-tweet_atts = [
-'id', 'text', 'created_at', 'favorite_count',
-'retweet_count', 'source'
-]
+# # define attributes you want
+# tweet_atts = [
+# 'id', 'text', 'created_at', 'geo', 'coordinates','favorite_count',
+# 'retweet_count', 'source'
+# ]
 
-# subset dataframe
+# # subset dataframe
 # tweets_df = tweets_df[tweet_atts]
 
 
-# define file path (string) to save csv file to
-FILE_PATH = "res.csv"
+# # define file path (string) to save csv file to
+# FILE_PATH = "ua.csv"
 
-# use pandas to save dataframe to csv
-tweets_df.to_csv(FILE_PATH)
+# # use pandas to save dataframe to csv
+# tweets_df.to_csv(FILE_PATH)
 
 
