@@ -12,32 +12,36 @@ auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth,wait_on_rate_limit=True)
 #####United Airlines
 # Open/Create a file to append data
-csvFile = open('ua.csv', 'w+')
+csvFile = open('tweets.csv', 'w+')
 # Use csv Writer
 csvWriter = csv.writer(csvFile)
-tag = "#FridayFeeling"
+tag = "#TuesdayThoughts"
 limit = 0
 csvWriter.writerow(["ID", "Username", "Twitter @", "Tweet","Tweeted At", "Favourite Count", "Retweet Count"])
+csvWriter.writerow([])
 
-for tweet in tweepy.Cursor(api.search,q=""+tag,count=300,lang="en",since="2017-04-03").items():
+for tweet in tweepy.Cursor(api.search,q=""+tag,count=350,lang="en",tweet_mode = "extended").items():
     # print (tweet.created_at, tweet.text)
-    if tweet.truncated == "True":
+    temp = tweet.full_text
+    if temp.startswith('RT @'):
     	continue
     print ("ID:", tweet.id)
     print ("User ID:", tweet.user.id)
     print ("Name: ", tweet.user.name)
     print ("Twitter @:", tweet.user.screen_name)
-    print ("Text:", tweet.text)
+    print ("Text:", tweet.full_text)
+    print ("Tweet length:", len(tweet.full_text))
     print ("Created:", tweet.created_at)
     print ("Favorite Count:", tweet.favorite_count)
     print ("Retweet count:", tweet.retweet_count)
+    # print ("Retweeted? :", tweet.retweeted)
     # print ("Truncated:", tweet.truncated)
     print ("\n\n")
 
-    csvWriter.writerow([tweet.id, tweet.user.name, tweet.user.screen_name, tweet.text,tweet.created_at, tweet.favorite_count, tweet.retweet_count])
+    csvWriter.writerow([tweet.id, tweet.user.name, tweet.user.screen_name, tweet.full_text,tweet.created_at, tweet.favorite_count, tweet.retweet_count])
     csvWriter.writerow([])
     limit = limit + 1
-    if limit == 5:
+    if limit == 10:
     	break
 
 print ("Done")
