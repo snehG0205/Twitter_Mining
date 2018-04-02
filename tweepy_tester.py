@@ -2,6 +2,8 @@ import tweepy
 import csv
 import pandas as pd
 from textblob import TextBlob
+import matplotlib.pyplot as plt
+
 ####input your credentials here
 consumer_key = 'FgCG8zcxF4oINeuAqUYzOw9xh'
 consumer_secret = 'SrSu7WhrYUpMZnHw7a5ui92rUA1n2jXNoZVb3nJ5wEsXC5xlN9'
@@ -16,7 +18,7 @@ api = tweepy.API(auth,wait_on_rate_limit=True)
 csvFile = open('tweets.csv', 'w+')
 # Use csv Writer
 csvWriter = csv.writer(csvFile)
-tag = "#WednesdayWisdom"
+tag = "#DonaldTrump"
 limit = 0
 res = ""
 positive = 0
@@ -84,4 +86,20 @@ print ("Neutral tweets: {} %".format(neutralPercent))
 #         sentence = row[3]
 #         blob = TextBlob(sentence)
 #         print (blob.sentiment)
+
+
+labels = 'Neutral', 'Positive', 'Negative'
+sizes = []
+sizes.append(neutralPercent)
+sizes.append(positivePercent)
+sizes.append(negativePercent)
+colors = ['lightskyblue','yellowgreen', 'lightcoral']
+explode = (0.0, 0, 0)  # explode 1st slice
+ 
+# Plot
+plt.pie(sizes, explode=explode, labels=labels, colors=colors,
+        autopct='%1.1f%%', shadow=False, startangle=140)
+plt.suptitle("Sentiment Analysis of {} tweets related to {}".format(limit, tag))
+plt.axis('equal')
+plt.show()
 
